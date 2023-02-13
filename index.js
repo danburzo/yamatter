@@ -29,9 +29,7 @@ const shouldWrite = args.options.write || args.options.w;
 
 const yamlOptions = Object.keys(args.options).reduce((obj, k) => {
 	const m = k.match(/^yaml\.(.+)/);
-	if (m) {
-		obj[m[1]] = args.options[k];
-	}
+	if (m) obj[m[1]] = args.options[k];
 	return obj;
 }, {});
 
@@ -47,7 +45,8 @@ fg(args.operands).then(entries => {
 			// Has front-matter
 			const [_, frontmatter, ...markdown] = content;
 			const data = load(frontmatter);
-			const res = `\n${dump(await transformFn(data), yamlOptions)}`;
+			const transformed = await transformFn(data) ?? data;
+			const res = `\n${dump(transformed, yamlOptions)}`;
 			if (shouldWrite) {
 				writeFile(filepath, [_, res, ...markdown].join('---'));
 			} else {
