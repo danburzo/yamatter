@@ -1,6 +1,6 @@
 {
   "name": "yamatter",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Transform YAML front matter data from the command line",
   "main": "index.js",
   "scripts": {
