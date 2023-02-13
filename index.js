@@ -30,18 +30,18 @@ const shouldWrite = args.options.write || args.options.w;
 /*
 	Delimiter: three or more lines, optional whitespace afterwards
  */
-const DELIMITER = /^(-{3,}\s*\r?\n)/m;
+const DELIMITER = /^-{3,}$/m;
 
 fg(args.operands).then(entries => {
 	entries.forEach(async filepath => {
 		const content = (await readFile(filepath, 'utf8')).split(DELIMITER);
 		if (content.length >= 2) {
 			// Has front-matter
-			const [_, delimiter, frontmatter, ...markdown] = content;
+			const [_, frontmatter, ...markdown] = content;
 			const data = load(frontmatter);
-			const res = dump(await transformFn(data));
+			const res = `\n${dump(await transformFn(data))}`;
 			if (shouldWrite) {
-				writeFile(filepath, [_, delimiter, res, ...markdown].join(''));
+				writeFile(filepath, [_, res, ...markdown].join('---'));
 			}
 		}
 	});
