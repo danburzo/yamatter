@@ -1,0 +1,33 @@
+{
+  "name": "yamatter",
+  "version": "0.0.1",
+  "description": "Transform YAML front matter data from the command line",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run test"
+  },
+  "bin": {
+    "yamatter": "./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danburzo/yamatter.git"
+  },
+  "type": "module",
+  "keywords": [
+    "yaml",
+    "markdown",
+    "frontmatter"
+  ],
+  "author": "Dan Burzo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/danburzo/yamatter/issues"
+  },
+  "homepage": "https://github.com/danburzo/yamatter#readme",
+  "dependencies": {
+    "fast-glob": "^3.2.12",
+    "js-yaml": "^4.1.0",
+    "opsh": "^1.1.0"
+  }
+}
