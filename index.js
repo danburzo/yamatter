@@ -4,10 +4,10 @@ import opsh from 'opsh';
 import fg from 'fast-glob';
 import { load, dump } from 'js-yaml';
 
-import { readFile } from 'node:fs/promises';
+import { writeFile, readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
-const args = opsh(process.argv.slice(2), ['h', 'help']);
+const args = opsh(process.argv.slice(2), ['h', 'help', 'w', 'write']);
 
 if (args.options.h || args.options.help) {
 	printHelp();
@@ -25,20 +25,24 @@ if (typeof transformFn !== 'function') {
 	);
 }
 
+const shouldWrite = args.options.write || args.options.w;
+
 /*
 	Delimiter: three or more lines, optional whitespace afterwards
  */
-const DELIMITER = /^-{3,}\s*$/m;
+const DELIMITER = /^(-{3,}\s*\r?\n)/m;
 
 fg(args.operands).then(entries => {
 	entries.forEach(async filepath => {
 		const content = (await readFile(filepath, 'utf8')).split(DELIMITER);
 		if (content.length >= 2) {
 			// Has front-matter
-			const [_, frontmatter, ...markdown] = content;
+			const [_, delimiter, frontmatter, ...markdown] = content;
 			const data = load(frontmatter);
 			const res = dump(await transformFn(data));
-			console.log(res);
+			if (shouldWrite) {
+				writeFile(filepath, [_, delimiter, res, ...markdown].join(''));
+			}
 		}
 	});
 });
