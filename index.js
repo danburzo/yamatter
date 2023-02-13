@@ -27,11 +27,15 @@ if (typeof transformFn !== 'function') {
 
 const shouldWrite = args.options.write || args.options.w;
 
+const YAML_DEFAULTS = {
+	'lineWidth': -1
+};
+
 const yamlOptions = Object.keys(args.options).reduce((obj, k) => {
 	const m = k.match(/^yaml\.(.+)/);
 	if (m) obj[m[1]] = args.options[k];
 	return obj;
-}, {});
+}, YAML_DEFAULTS);
 
 /*
 	Delimiter: three or more lines, optional whitespace afterwards
@@ -45,7 +49,7 @@ fg(args.operands).then(entries => {
 			// Has front-matter
 			const [_, frontmatter, ...markdown] = content;
 			const data = load(frontmatter);
-			const transformed = await transformFn(data) ?? data;
+			const transformed = await transformFn(data, filepath) ?? data;
 			const res = `\n${dump(transformed, yamlOptions)}`;
 			if (shouldWrite) {
 				writeFile(filepath, [_, res, ...markdown].join('---'));
