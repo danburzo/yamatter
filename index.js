@@ -9,13 +9,16 @@ export function parse(content, filepath) {
 	const parts = content.split(DELIMITER);
 	if (parts.length >= 2) {
 		const [before, frontmatter, ...after] = parts;
-		return {
-			filepath,
+		const res = {
 			frontmatter,
 			data: load(frontmatter),
 			before,
 			after
 		};
+		if (filepath) {
+			res.filepath = filepath;
+		}
+		return res;
 	}
 	return null;
 }
