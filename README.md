@@ -1,7 +1,3 @@
----
-hello: world
----
-
 Yamatter is a command-line tool to inspect and transform YAML front-matter data  using [`js-yaml`](https://github.com/nodeca/js-yaml).
 
 ## Installation
