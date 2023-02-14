@@ -5,7 +5,11 @@ import { writeFile, readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { parse, transform, toYAML, serialize } from './index.js';
 
-const args = opsh(process.argv.slice(2), ['h', 'help', 'w', 'write']);
+const args = opsh(
+	process.argv.slice(2), 
+	// Boolean options
+	['h', 'help', 'w', 'write', 'no-ignore']
+);
 
 if (args.options.h || args.options.help) {
 	printHelp();
@@ -33,7 +37,34 @@ const yamlOptions = Object.keys(args.options).reduce((obj, k) => {
 	return obj;
 }, YAML_DEFAULTS);
 
-fg(args.operands).then(entries => {
+
+let fgOptions = {};
+
+/*
+	Ignore patterns based on .gitignore rules,
+	unless the `--no-ignore` option has been used.
+ */
+if (!args.options['no-ignore']) {
+	try {
+		fgOptions.ignore = (await readFile('.gitignore', 'utf8'))
+			.split('\n')
+			.filter(line => line.trim() && !line.match(/^#/))
+			.map(pattern => {
+				/*
+					Make .gitignore pattern glob-compatible.
+					Each pattern matches itself (in case of files)
+					or descendant files.
+				 */
+				return [
+					pattern.trim(), 
+					`${pattern.trim().replace(/\/$/, '')}/**`
+				];
+			})
+			.flat();
+	} catch(err) {};
+}
+
+fg(args.operands, fgOptions).then(entries => {
 	entries.forEach(async filepath => {
 		const content = await readFile(filepath, 'utf8');
 		const parsed = parse(content);
@@ -75,5 +106,8 @@ Options:
 
 	--yaml.<option>=<value>
 		Pass options to the YAML engine (js-yaml).
+
+	--no-ignore
+		Don't ignore files from .gitignore.
 `);
 }

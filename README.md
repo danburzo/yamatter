@@ -32,6 +32,8 @@ yamatter 'content/**/*.md' 'notes/*.md'
 
 `yamatter` looks for lines beginning with three or more hyphens (`---`) as the delimiter for front-matter data. Any matching files without front-matter data delimiters are ignored. 
 
+By default, `yamatter` ignores files matched by patterns inside `.gitignore`, if it finds one in the current working directory. It does not look for other `.gitignore` files neither up, nor down, the file system hierarchy. You can disable the ignore behavior with the `--no-ignore` flag.
+
 ### Options
 
 #### `-t <file>, --transform=<file>`
@@ -72,6 +74,10 @@ Pass serialization options to [`js-yaml`](https://github.com/nodeca/js-yaml)'s `
 	"lineWidth": -1
 }
 ```
+
+#### `--no-ignore`
+
+Don't ignore files based on patterns found in `.gitignore`.
 
 ## See also
 
