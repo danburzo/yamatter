@@ -31,14 +31,38 @@ const YAML_DEFAULTS = {
 	'lineWidth': -1
 };
 
-const yamlOptions = Object.keys(args.options).reduce((obj, k) => {
-	const m = k.match(/^yaml\.(.+)/);
-	if (m) obj[m[1]] = args.options[k];
-	return obj;
-}, YAML_DEFAULTS);
+const GLOB_DEFAULTS = {
+	followSymbolicLinks: false
+};
 
+function cast(val) {
+	if (val === 'true') return true;
+	if (val === 'false') return false;
+	const num = parseFloat(val);
+	if (!Number.isNaN(num)) return num;
+	return val;
+}
 
-let fgOptions = {};
+function namespacedOptions(namespace) {
+	const matcher = new RegExp(String.raw`${namespace}\.(.+)`);
+	return Object.keys(args.options).reduce((obj, k) => {
+		const m = k.match(matcher);
+		if (m) {
+			obj[m[1]] = cast(args.options[k]);
+		}
+		return obj;
+	}, {});
+};
+
+const yamlOptions = {
+	...YAML_DEFAULTS,
+	...namespacedOptions('yaml')
+};
+
+const globOptions = {
+	...GLOB_DEFAULTS,
+	...namespacedOptions('glob')
+};
 
 /*
 	Ignore patterns based on .gitignore rules,
@@ -46,7 +70,7 @@ let fgOptions = {};
  */
 if (!args.options['no-ignore']) {
 	try {
-		fgOptions.ignore = (await readFile('.gitignore', 'utf8'))
+		globOptions.ignore = (await readFile('.gitignore', 'utf8'))
 			.split('\n')
 			.filter(line => line.trim() && !line.match(/^#/))
 			.map(pattern => {
@@ -64,7 +88,7 @@ if (!args.options['no-ignore']) {
 	} catch(err) {};
 }
 
-fg(args.operands, fgOptions).then(entries => {
+fg(args.operands, globOptions).then(entries => {
 	entries.forEach(async filepath => {
 		const content = await readFile(filepath, 'utf8');
 		const parsed = parse(content);
@@ -104,10 +128,15 @@ Options:
 	-t <file>, --transform=<file>
 		Path to a JS module whose default export is a transform function.
 
-	--yaml.<option>=<value>
-		Pass options to the YAML engine (js-yaml).
-
 	--no-ignore
 		Don't ignore files from .gitignore.
+
+	--yaml.<option>=<value>
+		Pass options to the YAML engine (js-yaml).
+		Supports boolean, numeric and string values.
+
+	--glob.<option>=<value>
+		Pass options to the glob engine (fast-glob).
+		Supports boolean, numeric and string values.
 `);
 }
