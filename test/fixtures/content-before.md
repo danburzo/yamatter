@@ -1,0 +1,4 @@
+Content?!
+---
+title: My Post
+---

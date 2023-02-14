@@ -1,24 +1,14 @@
 import { load, dump } from 'js-yaml';
 
-/*
-	Delimiter: three or more lines, optional whitespace afterwards
- */
-const DELIMITER = /^-{3,}$/m;
-
-export function parse(content, filepath) {
-	const parts = content.split(DELIMITER);
-	if (parts.length >= 2) {
-		const [before, frontmatter, ...after] = parts;
-		const res = {
+export function parse(content, delim = /(^-{3,}$)/m) {
+	const [whitespace, delimiter, frontmatter, ...after] = content.split(delim);
+	if (!whitespace.trim() && after.length > 1) {
+		return {
 			frontmatter,
 			data: load(frontmatter),
-			before,
+			before: [whitespace, delimiter],
 			after
 		};
-		if (filepath) {
-			res.filepath = filepath;
-		}
-		return res;
 	}
 	return null;
 }
@@ -32,5 +22,5 @@ export function toYAML(data, yamlOptions) {
 }
 
 export function serialize(parsed) {
-	return [parsed.before, parsed.yaml, ...parsed.after].join('---');
+	return [...parsed.before, parsed.yaml, ...parsed.after].join('');
 }

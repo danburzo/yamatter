@@ -36,8 +36,9 @@ const yamlOptions = Object.keys(args.options).reduce((obj, k) => {
 fg(args.operands).then(entries => {
 	entries.forEach(async filepath => {
 		const content = await readFile(filepath, 'utf8');
-		const parsed = parse(content, filepath);
+		const parsed = parse(content);
 		if (parsed) {
+			parsed.filepath = filepath;
 			parsed.yaml = toYAML(
 				await transform(parsed, transformFn), 
 				yamlOptions
