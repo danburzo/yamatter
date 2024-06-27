@@ -8,7 +8,7 @@ import { parse, transform, toYAML, serialize } from './index.js';
 const args = opsh(
 	process.argv.slice(2), 
 	// Boolean options
-	['h', 'help', 'w', 'write', 'no-ignore']
+	['h', 'help', 'w', 'write', 'no-ignore', 'silent']
 );
 
 if (args.options.h || args.options.help) {
@@ -100,11 +100,11 @@ fg(args.operands, globOptions).then(entries => {
 			);
 			if (args.options.write || args.options.w) {
 				writeFile(filepath, serialize(parsed));
-			} else {
+			} else if (!args.options.silent) {
 				console.log('\x1b[36m%s:\x1b[0m', filepath);
 				console.log(parsed.yaml);
 			}
-		} else {
+		} else if (!args.options.silent) {
 			console.log('\x1b[36mSKIP %s\x1b[0m', filepath);
 		}
 	});
@@ -129,7 +129,10 @@ Options:
 		Path to a JS module whose default export is a transform function.
 
 	--no-ignore
-		Don't ignore files from .gitignore.
+		Don’t ignore files from .gitignore.
+
+	--silent
+		Don’t output to stdout.
 
 	--yaml.<option>=<value>
 		Pass options to the YAML engine (js-yaml).
