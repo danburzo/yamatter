@@ -40,7 +40,11 @@ Symbolic links (symlinks) are not followed. This helps avoid accidentally proces
 
 #### `--no-ignore`
 
-Don't ignore files based on patterns found in `.gitignore`.
+Don’t ignore files based on patterns found in `.gitignore`.
+
+#### `--silent`
+
+Don’t output to the standard output. 
 
 #### `-t <file>, --transform=<file>`
 
@@ -69,7 +73,7 @@ module.exports = function(data, filepath) {
 
 Write the result of the transformation back to the file.
 
-__Pro tip:__ Since this has the potential to be destructive, it is recommended that you run any `yamatter --write` commands in a folder that's managed by a source control system such as Git, with any pending changes committed. This makes it easy to revert the files back to their original content.
+__Pro tip:__ Since this has the potential to be destructive, it is recommended that you run any `yamatter --write` commands in a folder that’s managed by a source control system such as Git, with any pending changes committed. This makes it easy to revert the files back to their original content.
 
 #### `--glob.<option>-<value>`
 
@@ -85,7 +89,7 @@ Boolean and numeric values are cast to their respective data types. Other values
 
 #### `--yaml.<option>=<value>`
 
-Pass serialization options to [`js-yaml`](https://github.com/nodeca/js-yaml)'s `dump()` method. These options are passed by default:
+Pass serialization options to [`js-yaml`](https://github.com/nodeca/js-yaml)’s `dump()` method. These options are passed by default:
 
 ```json
 {
