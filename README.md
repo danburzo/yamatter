@@ -75,7 +75,7 @@ Write the result of the transformation back to the file.
 
 __Pro tip:__ Since this has the potential to be destructive, it is recommended that you run any `yamatter --write` commands in a folder that’s managed by a source control system such as Git, with any pending changes committed. This makes it easy to revert the files back to their original content.
 
-#### `--glob.<option>-<value>`
+#### `--glob.<option>=<value>`
 
 Pass options to [`fast-glob`](https://github.com/mrmlnc/fast-glob) directly. These options are passed by default:
 
