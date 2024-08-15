@@ -46,6 +46,14 @@ Don’t ignore files based on patterns found in `.gitignore`.
 
 Don’t output to the standard output. 
 
+#### `--no-filename`
+
+Don’t output filenames to the standard output.
+
+#### `--json`
+
+When outputting to the standard output, serialize the data as JSON instead of YAML.
+
 #### `-t <file>, --transform=<file>`
 
 Point to a JavaScript module, relative to the current working directory, that performs a transformation on the front-matter data. 

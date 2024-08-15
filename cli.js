@@ -8,7 +8,7 @@ import { parse, transform, toYAML, serialize } from './index.js';
 const args = opsh(
 	process.argv.slice(2), 
 	// Boolean options
-	['h', 'help', 'w', 'write', 'no-ignore', 'silent']
+	['h', 'help', 'w', 'write', 'no-ignore', 'silent', 'json', 'no-filename']
 );
 
 if (args.options.h || args.options.help) {
@@ -101,10 +101,16 @@ fg(args.operands, globOptions).then(entries => {
 			if (args.options.write || args.options.w) {
 				writeFile(filepath, serialize(parsed));
 			} else if (!args.options.silent) {
-				console.log('\x1b[36m%s:\x1b[0m', filepath);
-				console.log(parsed.yaml);
+				if (!args.options['no-filename']) {
+					console.log('\x1b[36m%s:\x1b[0m', filepath);
+				}
+				console.log(
+					args.options.json ? 
+						JSON.stringify(parsed.data || {}, null, 2) :
+						parsed.yaml
+				);
 			}
-		} else if (!args.options.silent) {
+		} else if (!args.options.silent && !args.options['no-filename']) {
 			console.log('\x1b[36mSKIP %s\x1b[0m', filepath);
 		}
 	});
@@ -133,6 +139,12 @@ Options:
 
 	--silent
 		Don’t output to stdout.
+
+	--json
+		Output the frontmatter data as JSON in the terminal.
+
+	--no-filename
+		Don’t include the names of files in the terminal output.
 
 	--yaml.<option>=<value>
 		Pass options to the YAML engine (js-yaml).
