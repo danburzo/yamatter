@@ -102,7 +102,7 @@ test('parse + serialize does not change content', async t => {
 		await delim_more_dashes
 	])).map(content => {
 		const parsed = parse(content);
-		parsed.yaml = toYAML(parsed.data);
+		parsed.transformed = toYAML(parsed.data);
 		assert.equal(serialize(parsed), content);
 	});
 });

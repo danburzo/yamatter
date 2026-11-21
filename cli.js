@@ -5,12 +5,21 @@ import { resolve } from 'node:path';
 import opsh from 'opsh';
 import fg from 'fast-glob';
 
-import { parse, transform, toYAML, serialize } from './index.js';
+import { parse, parseKirby, transform, toYAML, serializeKirby, serialize } from './index.js';
 
 const args = opsh(
 	process.argv.slice(2), 
 	// Boolean options
-	['h', 'help', 'w', 'write', 'no-ignore', 'silent', 'json', 'no-filename']
+	[
+		'h', 'help', 
+		// TODO: 'v', 'version'
+		'w', 'write', 
+		'no-ignore', 
+		'no-filename', 
+		'silent', 
+		'json', 
+		'k', 'kirby'
+	]
 );
 
 if (args.options.h || args.options.help) {
@@ -90,16 +99,18 @@ if (!args.options['no-ignore']) {
 	} catch(err) {};
 }
 
+const kirby = args.options.k || args.options.kirby;
+
 fg(args.operands, globOptions).then(entries => {
 	entries.forEach(async filepath => {
 		const content = await readFile(filepath, 'utf8');
-		const parsed = parse(content);
+		const parsed = kirby ? parseKirby(content) : parse(content);
 		if (parsed) {
 			parsed.filepath = filepath;
-			parsed.yaml = toYAML(
-				await transform(parsed, transformFn), 
-				yamlOptions
-			);
+			const transformed = await transform(parsed, transformFn);
+			parsed.transformed = kirby ? 
+				serializeKirby(transformed) : 
+				toYAML(transformed, yamlOptions);
 			if (args.options.write || args.options.w) {
 				writeFile(filepath, serialize(parsed));
 			} else if (!args.options.silent) {
@@ -109,7 +120,7 @@ fg(args.operands, globOptions).then(entries => {
 				console.log(
 					args.options.json ? 
 						JSON.stringify(parsed.data || {}, null, 2) :
-						parsed.yaml
+						parsed.transformed
 				);
 			}
 		} else if (!args.options.silent && !args.options['no-filename']) {
