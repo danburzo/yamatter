@@ -1,8 +1,8 @@
-Yamatter is a command-line tool to inspect and transform YAML front-matter data  using [`js-yaml`](https://github.com/nodeca/js-yaml).
+Yamatter is a command-line tool to inspect and transform YAML front-matter data or, when using the `--kirby` flag, the [Kirby CMS](https://getkirby.com/) content format.
 
 ## Installation
 
-Install `yamatter` globally with `npm`:
+Install [`yamatter`](https://npmjs.com/package/yamatter) globally with `npm`:
 
 ```bash
 npm install -g yamatter
@@ -11,7 +11,7 @@ npm install -g yamatter
 Run `yamatter` without installing it with `npx`:
 
 ```bash
-npx yamatter
+npx yamatter --help
 ```
 
 ## Usage
@@ -20,17 +20,19 @@ npx yamatter
 yamatter [OPTIONS] [PATTERN ...]
 ```
 
+Run `yamatter --help` for a summary of available options.
+
 ### Operands
 
-The `yamatter` command accepts one or more glob patterns to match the files from which to read front-matter data. 
+`yamatter` accepts one or more glob patterns to match the files from which to read YAML front-matter data. 
 
-The patterns are expanded by [`fast-glob`](https://github.com/mrmlnc/fast-glob). In order for the glob patterns to be expanded with `fast-glob` and not the shell that runs the command (e.g. `sh`, `bash`, `zsh`), make sure pass them enclosed in quotes:
+The patterns are expanded by [`fast-glob`](https://github.com/mrmlnc/fast-glob). For the glob patterns to be expanded with `fast-glob` and not the shell that runs the command (e.g. `sh`, `bash`, `zsh`), make sure pass them enclosed in quotes:
 
 ```bash
 yamatter 'content/**/*.md' 'notes/*.md'
 ```
 
-`yamatter` looks for lines beginning with three or more hyphens (`---`) as the delimiter for front-matter data. Any matching files without front-matter data delimiters are ignored. 
+`yamatter` looks for lines beginning with three or more hyphens (`---`) as the delimiter for YAML front-matter data. Any matching files without front-matter data delimiters are ignored. 
 
 By default, `yamatter` ignores files matched by patterns inside `.gitignore`, if it finds one in the current working directory. It does not look for other `.gitignore` files neither up, nor down, the file system hierarchy. You can disable the ignore behavior with the `--no-ignore` flag.
 
@@ -53,6 +55,10 @@ Don’t output filenames to the standard output.
 #### `--json`
 
 When outputting to the standard output, serialize the data as JSON instead of YAML.
+
+#### `--kirby`
+
+Use Kirby mode, where the input is parsed and serialized as [Kirby CMS](https://getkirby.com/) content files.
 
 #### `-t <file>, --transform=<file>`
 

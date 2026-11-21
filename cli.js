@@ -156,6 +156,10 @@ Options:
 	--json
 		Output the frontmatter data as JSON in the terminal.
 
+	--kirby
+		Use Kirby mode, where the input is parsed and serialized 
+		as Kirby CMS content files.
+
 	--no-filename
 		Don’t include the names of files in the terminal output.
 
