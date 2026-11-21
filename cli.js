@@ -1,8 +1,10 @@
 #!/usr/bin/env node
-import opsh from 'opsh';
-import fg from 'fast-glob';
 import { writeFile, readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
+
+import opsh from 'opsh';
+import fg from 'fast-glob';
+
 import { parse, transform, toYAML, serialize } from './index.js';
 
 const args = opsh(

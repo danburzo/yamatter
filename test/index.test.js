@@ -1,6 +1,8 @@
-import tape from 'tape';
-import { parse, toYAML, serialize } from '../index.js';
+import test from 'node:test';
+import assert from 'node:assert';
 import { readFile } from 'node:fs/promises';
+
+import { parse, toYAML, serialize } from '../index.js';
 
 const no_content = readFile('test/fixtures/no-content.md', 'utf8');
 const no_newline = readFile('test/fixtures/no-newline.md', 'utf8');
@@ -11,8 +13,8 @@ const delim_more_dashes = readFile('test/fixtures/delim-more-dashes.md', 'utf8')
 const content_before = readFile('test/fixtures/content-before.md', 'utf8');
 const no_frontmatter = readFile('test/fixtures/no-frontmatter.md', 'utf8');
 
-tape('parsing', async t => {
-	t.deepEqual(
+test('parsing', async t => {
+	assert.deepEqual(
 		parse(await no_content),
 		{
 			frontmatter: '\nhello: world\n',
@@ -25,7 +27,7 @@ tape('parsing', async t => {
 		'no content'
 	);
 
-	t.deepEqual(
+	assert.deepEqual(
 		parse(await no_newline),
 		{
 			frontmatter: '\nhello: world\n',
@@ -38,7 +40,7 @@ tape('parsing', async t => {
 		'no newline after frontmatter'
 	);
 
-	t.deepEqual(
+	assert.deepEqual(
 		parse(await whitespace_before),
 		{
 			frontmatter: '\nhello: world\n',
@@ -51,7 +53,7 @@ tape('parsing', async t => {
 		'whitespace before frontmatter'
 	);
 
-	t.deepEqual(
+	assert.deepEqual(
 		parse(await with_content),
 		{
 			frontmatter: '\nhello: world\n',
@@ -64,7 +66,7 @@ tape('parsing', async t => {
 		'with content'
 	);
 
-	t.deepEqual(
+	assert.deepEqual(
 		parse(await empty_frontmatter),
 		{
 			frontmatter: '\n',
@@ -75,7 +77,7 @@ tape('parsing', async t => {
 		'with content'
 	);
 
-	t.deepEqual(
+	assert.deepEqual(
 		parse(await delim_more_dashes),
 		{
 			frontmatter: '\ntitle: Hello World\n',
@@ -86,13 +88,11 @@ tape('parsing', async t => {
 		'with content'
 	);
 
-	t.equal(parse(await no_frontmatter), null, 'no frontmatter');
-	t.equal(parse(await content_before), null, 'content before frontmatter');
-
-	t.end();
+	assert.equal(parse(await no_frontmatter), null, 'no frontmatter');
+	assert.equal(parse(await content_before), null, 'content before frontmatter');
 });
 
-tape('parse + serialize does not change content', async t => {
+test('parse + serialize does not change content', async t => {
 	(await Promise.all([
 		await no_content,
 		await with_content,
@@ -103,8 +103,6 @@ tape('parse + serialize does not change content', async t => {
 	])).map(content => {
 		const parsed = parse(content);
 		parsed.yaml = toYAML(parsed.data);
-		t.equal(serialize(parsed), content);
+		assert.equal(serialize(parsed), content);
 	});
-
-	t.end();
 });

@@ -3,9 +3,11 @@ import { load, dump } from 'js-yaml';
 export function parse(content, delim = /(^-{3,}$)/m) {
 	const [whitespace, delimiter, frontmatter, ...after] = content.split(delim);
 	if (!whitespace.trim() && after.length > 1) {
+		let data = undefined;
+		try { data = load(frontmatter); } catch(err) {}
 		return {
 			frontmatter,
-			data: load(frontmatter),
+			data,
 			before: [whitespace, delimiter],
 			after
 		};

@@ -4,7 +4,7 @@
   "description": "Transform YAML front-matter data from the command line",
   "main": "index.js",
   "scripts": {
-    "test": "npx tape 'test/**/*.test.js'"
+    "test": "node --test 'test/**/*.test.js'"
   },
   "bin": {
     "yamatter": "./cli.js"
@@ -26,11 +26,8 @@
   },
   "homepage": "https://github.com/danburzo/yamatter#readme",
   "dependencies": {
-    "fast-glob": "^3.2.12",
-    "js-yaml": "^4.1.0",
+    "fast-glob": "^3.3.3",
+    "js-yaml": "^5.5.0",
     "opsh": "^1.1.0"
-  },
-  "devDependencies": {
-    "tape": "^5.6.3"
   }
 }
