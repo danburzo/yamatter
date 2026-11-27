@@ -12,6 +12,7 @@ const empty_frontmatter = readFile('test/fixtures/empty-frontmatter.md', 'utf8')
 const delim_more_dashes = readFile('test/fixtures/delim-more-dashes.md', 'utf8');
 const content_before = readFile('test/fixtures/content-before.md', 'utf8');
 const no_frontmatter = readFile('test/fixtures/no-frontmatter.md', 'utf8');
+const plain_yaml = readFile('test/fixtures/plain-yaml.yml', 'utf8');
 
 test('parsing', async t => {
 	assert.deepEqual(
@@ -90,6 +91,36 @@ test('parsing', async t => {
 
 	assert.equal(parse(await no_frontmatter), null, 'no frontmatter');
 	assert.equal(parse(await content_before), null, 'content before frontmatter');
+
+	assert.deepEqual(
+		parse(await plain_yaml),
+		{
+			frontmatter: await plain_yaml,
+			before: [],
+			after: [],
+			data: {
+		      columns: {
+		        main: {
+		          sections: {
+		            fields: {
+		              fields: {
+		                text: {
+		                  type: 'textarea'
+		                }
+		              },
+		              type: 'fields'
+		            },
+		            subpages: {
+		              template: 'article',
+		              type: 'pages'
+		            }
+		          },
+		          width: '2/3'
+		        }
+		      }
+		    }
+		}
+	)
 });
 
 test('parse + serialize does not change content', async t => {

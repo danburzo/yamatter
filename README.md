@@ -1,4 +1,4 @@
-Yamatter is a command-line tool to inspect and transform YAML front-matter data or, when using the `--kirby` flag, the [Kirby CMS](https://getkirby.com/) content format.
+Yamatter is a command-line tool to inspect and transform YAML, either by itself or as front-matter data. The [Kirby CMS](https://getkirby.com/) content format is also supported with the `--kirby` flag.
 
 ## Installation
 
@@ -32,7 +32,7 @@ The patterns are expanded by [`fast-glob`](https://github.com/mrmlnc/fast-glob).
 yamatter 'content/**/*.md' 'notes/*.md'
 ```
 
-`yamatter` looks for lines beginning with three or more hyphens (`---`) as the delimiter for YAML front-matter data. Any matching files without front-matter data delimiters are ignored. 
+`yamatter` looks for lines beginning with three or more hyphens (`---`) as the delimiter for YAML front-matter data. Files without front-matter data delimiters are interpreted as YAML, and otherwise ignored. 
 
 By default, `yamatter` ignores files matched by patterns inside `.gitignore`, if it finds one in the current working directory. It does not look for other `.gitignore` files neither up, nor down, the file system hierarchy. You can disable the ignore behavior with the `--no-ignore` flag.
 
