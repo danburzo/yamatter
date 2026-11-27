@@ -1,0 +1,12 @@
+columns:
+  main:
+    width: 2/3
+    sections:
+      fields:
+        type: fields
+        fields:
+          text:
+            type: textarea
+      subpages:
+        type: pages
+        template: article

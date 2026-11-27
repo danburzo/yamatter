@@ -12,6 +12,15 @@ export function parse(content, delim = /(^-{3,}$)/m) {
 			after
 		};
 	}
+	// if unsuccessful, try to parse the entire content as YAML
+	try {
+		return {
+			frontmatter: content,
+			data: load(content),
+			before: [],
+			after: []
+		}
+	} catch(err) {}
 	return null;
 }
 
